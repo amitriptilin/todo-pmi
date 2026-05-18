@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задачник</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    
+    <div class="app-wrapper">
+        <div class="app-container">
+            <!-- Шапка -->
+            <header class="header">
+                <h1>ЗАДАЧНИК</h1>
+                <div class="progress-wrapper">
+                    <div class="progress-circle" id="progress-circle">
+                        <span id="progress-text">0%</span>
+                    </div>
+                    <span class="progress-label">Готово<br><small id="progress-count">0/0 задач</small></span>
+                </div>
+            </header>
+
+            <!-- Добавление задачи -->
+            <div class="new-task-area">
+                <div class="new-task-bar">
+                    <input type="text" id="task-input" placeholder="Новая задача...">
+                    <button id="add-btn"><i class="fas fa-plus"></i></button>
+                    <button id="detailed-btn" class="detailed-btn"><i class="fas fa-chevron-down"></i></button>
+                </div>
+
+                <div class="task-details" id="taskDetails">
+                    <div class="details-row">
+                        <div class="details-group full-width">
+                            <label for="task-desc"><i class="far fa-file-alt"></i> Описание</label>
+                            <textarea id="task-desc" rows="2" placeholder="Подробности задачи..."></textarea>
+                        </div>
+                    </div>
+                    <div class="details-row details-row-second">
+                        <div class="details-group">
+                            <label for="task-date"><i class="far fa-calendar-alt"></i> Дата</label>
+                            <div class="custom-date-input">
+                                <input type="date" id="task-date">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="details-group">
+                            <label for="task-time"><i class="far fa-clock"></i> Время</label>
+                            <div class="custom-time-input">
+                                <input type="time" id="task-time">
+                            </div>
+                        </div>
+                        <button id="add-detailed-btn" class="details-add-btn">Добавить</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Контент вкладок -->
+            <div class="task-list-container" id="today-list">
+                <h3 class="list-title" id="listTitle">СЕГОДНЯ</h3>
+                <ul id="task-list"></ul>
+            </div>
+
+            <!-- Профиль -->
+            <div class="profile-container" id="profile-container" style="display: none;">
+                <div class="profile-content">
+                    <div class="avatar-placeholder">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h2 id="user-name">Test User</h2>
+                    <p id="user-email">test@example.com</p>
+                    
+                    <button id="google-login-btn" class="google-btn">
+                        <i class="fab fa-google"></i> Войти через Google
+                    </button>
+                    
+                    <div class="profile-stats">
+                        <div>Задач выполнено: <strong id="completed-total">12</strong></div>
+                        <div>Создано задач: <strong id="total-tasks">18</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Настройки -->
+            <div class="settings-container" id="settings-container" style="display: none;">
+                <h3 class="list-title">НАСТРОЙКИ</h3>
+                
+                <div class="settings-section">
+                    <h4><i class="fas fa-palette"></i> Тема приложения</h4>
+                    <div class="theme-options" id="theme-options"></div>
+                </div>
+
+                <div class="settings-section">
+                    <h4><i class="fas fa-bell"></i> Уведомления</h4>
+                    <label class="setting-item toggle-item">
+                        <span>Напоминания о задачах</span>
+                        <label class="switch">
+                            <input type="checkbox" id="notify-tasks" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                    <label class="setting-item toggle-item">
+                        <span>Звук уведомлений</span>
+                        <label class="switch">
+                            <input type="checkbox" id="notify-sound" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+
+                <div class="settings-section">
+                    <h4><i class="fas fa-cog"></i> Данные и приложение</h4>
+                    <button class="settings-btn" id="clear-data">Очистить все задачи</button>
+                    <button class="settings-btn danger" id="reset-app">Сбросить приложение</button>
+                </div>
+            </div>
+
+            <!-- Нижняя навигация -->
+            <footer class="bottom-nav">
+                <div class="nav-item active" data-tab="today">
+                    <i class="fas fa-calendar-day"></i><span>Сегодня</span>
+                </div>
+                <div class="nav-item" data-tab="list">
+                    <i class="fas fa-list"></i><span>Список</span>
+                </div>
+                <div class="nav-item" data-tab="profile">
+                    <i class="fas fa-user"></i><span>Профиль</span>
+                </div>
+                <div class="nav-item" data-tab="settings">
+                    <i class="fas fa-cog"></i><span>Настройки</span>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h3>Редактировать задачу</h3>
+            <input type="text" id="edit-text" placeholder="Название задачи">
+            <textarea id="edit-desc" placeholder="Описание"></textarea>
+            
+            <div class="modal-row">
+                <div>
+                    <label>Дата</label>
+                    <input type="date" id="edit-date">
+                </div>
+                <div>
+                    <label>Время</label>
+                    <input type="time" id="edit-time">
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="cancel-edit" class="secondary-btn">Отмена</button>
+                <button id="save-edit" class="primary-btn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
