@@ -108,7 +108,6 @@ body {
     margin: 0 auto;
 }
 
-/* Центрирование содержимого */
 .header, .new-task-area, .task-list-container, .bottom-nav {
     width: 100%;
     max-width: 1400px;
@@ -134,7 +133,7 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Прогресс (Кольцо с двойной обводкой) */
+/*Прогресс*/
 @property --progress {
   syntax: '<percentage>';
   inherits: false;
@@ -372,7 +371,7 @@ body {
     margin: 0;
 }
 
-/* ===== ЗАДАЧА (КАРТОЧКА) С HOVER И РАСКРЫТИЕМ ===== */
+/*ЗАДАЧА*/
 .task-item {
     display: flex;
     flex-direction: column;
@@ -469,7 +468,7 @@ body {
     transform: scale(1.2);
 }
 
-/* ===== БЛОК РАСКРЫТИЯ (МЕТА-ИНФОРМАЦИЯ) ===== */
+/*БЛОК РАСКРЫТИЯ*/
 .task-meta-wrapper {
     max-height: 0;
     overflow: hidden;
@@ -505,7 +504,6 @@ body {
     flex-shrink: 0;
 }
 
-/* Описание внутри мета-информации */
 .task-desc-wrapper {
     display: flex;
     align-items: center;
@@ -560,7 +558,7 @@ body {
     100% { opacity: 1; transform: translateX(0); }
 }
 
-/* ===== НИЖНЯЯ НАВИГАЦИЯ (ВКЛАДКИ) ===== */
+/*НИЖНЯЯ НАВИГАЦИЯ (ВКЛАДКИ)*/
 .bottom-nav {
     display: flex;
     justify-content: space-between;
@@ -592,7 +590,7 @@ body {
     font-weight: 700;
 }
 
-/* ===== ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ (TOAST) ===== */
+/*ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ*/
 #toast-container {
     position: fixed;
     top: 50%;
@@ -635,7 +633,7 @@ body {
     color: #333;
 }
 
-/* ==================== МОДАЛЬНОЕ ОКНО ==================== */
+/*МОДАЛЬНОЕ ОКНО*/
 .modal {
     display: none;
     position: fixed;
@@ -721,7 +719,6 @@ body {
     border: none;
 }
 
-/* Улучшения новой панели */
 .new-task-bar {
     display: flex;
     align-items: center;
@@ -751,7 +748,7 @@ body {
     }
 }
 
-/* ====================== ПРОФИЛЬ ====================== */
+/*ПРОФИЛЬ*/
 .profile-container {
     display: none;
     flex-direction: column;
@@ -878,7 +875,7 @@ body {
     color: #e74c3c;
 }
 
-/* ====================== НАСТРОЙКИ ====================== */
+/*НАСТРОЙКИ*/
 .settings-container {
     padding: 20px 15px 100px 15px;
     height: 100%;

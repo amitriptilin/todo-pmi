@@ -1,19 +1,15 @@
-// ====================== ЗАДАЧНИК ======================
 let tasks = [];
 let currentTab = 'today';
 let editingTaskId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Восстанавливаем сохраненную тему
     const savedTheme = localStorage.getItem('theme') || 'default';
     document.documentElement.setAttribute('data-theme', savedTheme);
 
-    // Загрузка задач
     const storedTasks = localStorage.getItem('tasks');
     if (storedTasks) {
         tasks = JSON.parse(storedTasks);
     } else {
-        // По умолчанию — пустой список задач
         tasks = [];
         saveTasks();
     }
@@ -23,16 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTasks();
 });
 
-// ====================== ИНИЦИАЛИЗАЦИЯ ======================
+// ИНИЦИАЛИЗАЦИЯ
 function initEventListeners() {
-    // Нижняя навигация
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', () => {
             switchTab(item.dataset.tab);
         });
     });
 
-    // Добавление задач
     const addBtn = document.getElementById('add-btn');
     const taskInput = document.getElementById('task-input');
 
@@ -41,20 +35,17 @@ function initEventListeners() {
         if (e.key === 'Enter') addSimpleTask();
     });
 
-    // Кнопка "Подробнее"
     document.getElementById('detailed-btn').addEventListener('click', () => {
         document.getElementById('taskDetails').classList.toggle('open');
     });
 
-    // Добавление с деталями
     document.getElementById('add-detailed-btn').addEventListener('click', addDetailedTask);
 
-    // Модальное окно редактирования
     document.getElementById('cancel-edit').addEventListener('click', closeModal);
     document.getElementById('save-edit').addEventListener('click', saveEditedTask);
 }
 
-// ====================== НАСТРОЙКИ ======================
+// НАСТРОЙКИ
 function initSettings() {
     const themes = [
         { name: "Зелёная", color: "#6D8B5D", id: "default" },
@@ -75,7 +66,6 @@ function initSettings() {
         div.title = theme.name;
         div.dataset.id = theme.id;
         
-        // Активируем сохраненную тему
         const currentTheme = localStorage.getItem('theme') || 'default';
         if (theme.id === currentTheme) div.classList.add('active');
 
@@ -88,7 +78,6 @@ function initSettings() {
         container.appendChild(div);
     });
 
-    // Действия
     document.getElementById('clear-data').addEventListener('click', () => {
         if (confirm('Очистить все задачи?')) {
             tasks = [];
@@ -107,7 +96,6 @@ function initSettings() {
 }
 
 function applyTheme(themeId) {
-    // Проверяем, не выбрана ли уже эта тема
     const currentTheme = localStorage.getItem('theme') || 'default';
     if (themeId === currentTheme) {
         return;
@@ -118,7 +106,7 @@ function applyTheme(themeId) {
     showToast(`Тема изменена`);
 }
 
-// ====================== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ======================
+// ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
 function switchTab(tab) {
     currentTab = tab;
 
@@ -131,7 +119,6 @@ function switchTab(tab) {
     const profileContainer = document.getElementById('profile-container');
     const settingsContainer = document.getElementById('settings-container');
 
-    // Скрываем всё
     todayList.style.display = 'none';
     profileContainer.style.display = 'none';
     settingsContainer.style.display = 'none';
@@ -151,7 +138,7 @@ function switchTab(tab) {
     }
 }
 
-// ====================== ФИЛЬТРАЦИЯ И ДАТЫ ======================
+// ФИЛЬТРАЦИЯ И ДАТЫ
 function getFilteredTasks() {
     if (currentTab === 'today') {
         const todayStr = new Date().toISOString().split('T')[0];
@@ -212,7 +199,7 @@ function getMonthRange() {
     return { start, end };
 }
 
-// ====================== ДОБАВЛЕНИЕ И РЕДАКТИРОВАНИЕ ======================
+// ДОБАВЛЕНИЕ И РЕДАКТИРОВАНИЕ
 function addSimpleTask() {
     const input = document.getElementById('task-input');
     const text = input.value.trim();
@@ -286,7 +273,7 @@ function closeModal() {
     editingTaskId = null;
 }
 
-// ====================== РАБОТА С ЗАДАЧАМИ ======================
+// РАБОТА С ЗАДАЧАМИ
 function createTaskElement(task) {
     const li = document.createElement('li');
     li.className = `task-item ${task.completed ? 'completed' : ''}`;
@@ -381,7 +368,7 @@ function saveTasks() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-// ====================== ПРОГРЕСС ======================
+// ПРОГРЕСС
 function updateProgress() {
     let total = 0, completed = 0;
 
@@ -401,7 +388,7 @@ function updateProgress() {
     document.getElementById('progress-count').innerHTML = `${completed}/${total} задач`;
 }
 
-// ====================== ОТРИСОВКА ======================
+// ОТРИСОВКА
 function renderTasks() {
     const list = document.getElementById('task-list');
     list.innerHTML = '';
@@ -441,7 +428,7 @@ function renderTasks() {
     updateProgress();
 }
 
-// ====================== УВЕДОМЛЕНИЯ ======================
+// УВЕДОМЛЕНИЯ
 function showToast(message, duration = 2500) {
     const container = document.getElementById('toast-container');
     const existingToast = container.querySelector('.toast');
