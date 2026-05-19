@@ -748,6 +748,7 @@ body {
     height: 100%;
     overflow-y: auto;
     background: var(--background);
+    width: 100%;
 }
 .profile-content {
     width: 100%;
@@ -758,6 +759,8 @@ body {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     text-align: center;
     margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .avatar-placeholder {
     width: 128px;
