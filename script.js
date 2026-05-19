@@ -222,9 +222,7 @@ function addSimpleTask() {
 
     input.value = '';
     saveTasks();
-    
-    switchTab('today');
-    
+    renderTasks();
     showToast('Задача добавлена!');
 }
 
@@ -379,10 +377,13 @@ function toggleTask(id) {
 }
 
 function deleteTask(id, element) {
+    // Визуальное удаление (плавное исчезновение)
     element.classList.add('removing');
 
+    // Находим задачу в массиве
     const task = tasks.find(t => t.id === id);
     if (!task) {
+        // Если задача не найдена, отменяем визуальное удаление
         element.classList.remove('removing');
         return;
     }
@@ -390,22 +391,31 @@ function deleteTask(id, element) {
     let isCancelled = false;
     let isExpired = false;
 
+    // Функция, вызываемая при нажатии "Отменить"
     const onUndo = () => {
-        if (isExpired) return;
+        if (isExpired) return; // Если таймер уже истек, отмена невозможна
         isCancelled = true;
+        // Возвращаем задачу в нормальное состояние
         element.classList.remove('removing');
-        updateProgress();
+        updateProgress(); // Обновляем прогресс, так как задача вернулась
     };
 
+    // Функция, вызываемая по истечении времени toast'а
     const onExpire = () => {
-        if (isCancelled) return;
+        if (isCancelled) return; // Если отменили, ничего не делаем
         isExpired = true;
+        // Финальное удаление
         tasks = tasks.filter(t => t.id !== id);
         saveTasks();
-        renderTasks();
+        renderTasks(); // Полная перерисовка — задача исчезает навсегда
     };
 
-    showUndoToast('Задача удалена', onUndo, onExpire, 3000);
+    // Показываем toast с возможностью отмены
+    showUndoToast('Задача удалена', onUndo, onExpire, 5000);
+}
+
+function saveTasks() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
 // ПРОГРЕСС
@@ -502,6 +512,7 @@ function showUndoToast(message, onUndo, onExpire, duration = 3000) {
     container.appendChild(toast);
     setTimeout(() => toast.classList.add('show'), 10);
 
+    // Таймер на автоматическое завершение (3 секунды)
     let timeoutId = setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => {
@@ -510,6 +521,7 @@ function showUndoToast(message, onUndo, onExpire, duration = 3000) {
         }, 300);
     }, duration);
 
+    // Обработчик кнопки "Отменить"
     const undoHandler = () => {
         if (timeoutId) {
             clearTimeout(timeoutId);
