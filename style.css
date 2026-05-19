@@ -1079,3 +1079,47 @@ input:checked + .slider:before {
 
 .priority-low .priority-dot { background: #27ae60; }
 .priority-low .priority-label { color: #27ae60; }
+
+/* ===== TOAST С ОТМЕНОЙ И ПРОГРЕСС-БАРОМ ===== */
+.toast.undo-toast {
+    gap: 12px;
+    justify-content: space-between;
+    padding: 12px 16px 8px 16px; /* Нижний отступ для полоски */
+    min-width: 280px;
+    max-width: 400px;
+    position: relative;
+    overflow: hidden;
+}
+
+.toast-undo-btn {
+    background: transparent;
+    border: none;
+    color: var(--main-color);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.toast-undo-btn:hover {
+    background-color: rgba(109, 139, 93, 0.15);
+    color: var(--main-dark);
+}
+
+/* Убывающая полоска */
+.toast-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background-color: var(--main-color);
+    border-radius: 0 0 16px 16px;
+    animation: shrink 3s linear forwards;
+}
+
+@keyframes shrink {
+    0% { width: 100%; }
+    100% { width: 0%; }
+}

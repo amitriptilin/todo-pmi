@@ -222,7 +222,9 @@ function addSimpleTask() {
 
     input.value = '';
     saveTasks();
-    renderTasks();
+    
+    switchTab('today');
+    
     showToast('Задача добавлена!');
 }
 
@@ -378,16 +380,32 @@ function toggleTask(id) {
 
 function deleteTask(id, element) {
     element.classList.add('removing');
-    setTimeout(() => {
+
+    const task = tasks.find(t => t.id === id);
+    if (!task) {
+        element.classList.remove('removing');
+        return;
+    }
+
+    let isCancelled = false;
+    let isExpired = false;
+
+    const onUndo = () => {
+        if (isExpired) return;
+        isCancelled = true;
+        element.classList.remove('removing');
+        updateProgress();
+    };
+
+    const onExpire = () => {
+        if (isCancelled) return;
+        isExpired = true;
         tasks = tasks.filter(t => t.id !== id);
         saveTasks();
         renderTasks();
-        showToast('Задача удалена');
-    }, 300);
-}
+    };
 
-function saveTasks() {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    showUndoToast('Задача удалена', onUndo, onExpire, 3000);
 }
 
 // ПРОГРЕСС
@@ -467,4 +485,42 @@ function showToast(message, duration = 2500) {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
     }, duration);
+}
+
+function showUndoToast(message, onUndo, onExpire, duration = 3000) {
+    const container = document.getElementById('toast-container');
+    const existingToast = container.querySelector('.toast');
+    if (existingToast) existingToast.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast undo-toast';
+    toast.innerHTML = `
+        <span class="toast-message">${message}</span>
+        <button class="toast-undo-btn">Отменить</button>
+        <div class="toast-progress-bar"></div>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    let timeoutId = setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+            if (onExpire) onExpire();
+        }, 300);
+    }, duration);
+
+    const undoHandler = () => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+        }
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+            if (onUndo) onUndo();
+        }, 300);
+    };
+
+    toast.querySelector('.toast-undo-btn').addEventListener('click', undoHandler);
 }
