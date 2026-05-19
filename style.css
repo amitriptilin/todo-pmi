@@ -11,7 +11,7 @@
     --shadow-color: rgba(0,0,0,0.05);
 }
 
-/* Тема: Красная */
+/* Темы */
 [data-theme="red"] {
     --main-color: #D96C6C;
     --main-dark: #C14F4F;
@@ -22,8 +22,6 @@
     --text-main: #333;
     --text-light: #555;
 }
-
-/* Тема: Синяя */
 [data-theme="blue"] {
     --main-color: #4A8BB8;
     --main-dark: #3A6F95;
@@ -34,8 +32,6 @@
     --text-main: #333;
     --text-light: #555;
 }
-
-/* Тема: Фиолетовая */
 [data-theme="purple"] {
     --main-color: #9B7EBD;
     --main-dark: #7F5F9E;
@@ -46,8 +42,6 @@
     --text-main: #333;
     --text-light: #555;
 }
-
-/* Тема: Серая */
 [data-theme="gray"] {
     --main-color: #6F7A8A;
     --main-dark: #5A6473;
@@ -58,8 +52,6 @@
     --text-main: #333;
     --text-light: #555;
 }
-
-/* Тема: Тёмная */
 [data-theme="dark"] {
     --main-color: #4A6B8A;
     --main-dark: #3A5773;
@@ -75,7 +67,6 @@
 
 /* Основные настройки */
 * { box-sizing: border-box; }
-
 body {
     margin: 0;
     padding: 0;
@@ -86,7 +77,6 @@ body {
     align-items: center;
     height: 100vh;
 }
-
 .app-wrapper {
     width: 100%;
     height: 100%;
@@ -94,7 +84,6 @@ body {
     justify-content: center;
     align-items: center;
 }
-
 .app-container {
     width: 100%;
     max-width: 1400px;
@@ -107,7 +96,6 @@ body {
     box-shadow: none;
     margin: 0 auto;
 }
-
 .header, .new-task-area, .task-list-container, .bottom-nav {
     width: 100%;
     max-width: 1400px;
@@ -133,19 +121,13 @@ body {
     letter-spacing: 0.5px;
 }
 
-/*Прогресс*/
-@property --progress {
-  syntax: '<percentage>';
-  inherits: false;
-  initial-value: 0%;
-}
-
+/* Прогресс */
+@property --progress { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
 .progress-wrapper {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-
 .progress-circle {
     width: clamp(50px, 6vw, 80px);
     height: clamp(50px, 6vw, 80px);
@@ -158,7 +140,6 @@ body {
     justify-content: center;
     transition: --progress 0.5s ease-out;
 }
-
 .progress-circle::before {
     content: '';
     position: absolute;
@@ -168,7 +149,6 @@ body {
     border: 2px solid #222;
     z-index: 1;
 }
-
 .progress-circle span {
     position: relative;
     z-index: 2;
@@ -176,7 +156,6 @@ body {
     font-weight: 700;
     color: #ffffff;
 }
-
 .progress-label {
     font-size: clamp(12px, 1vw, 16px);
     font-weight: 600;
@@ -184,12 +163,11 @@ body {
     text-align: right;
 }
 
-/* Добавление задачи (панель) */
+/* Добавление задачи */
 .new-task-area {
     margin-bottom: 20px;
     flex-shrink: 0;
 }
-
 .new-task-bar {
     display: flex;
     align-items: center;
@@ -198,7 +176,6 @@ body {
     padding: clamp(4px, 0.6vw, 8px) clamp(4px, 0.6vw, 8px) clamp(4px, 0.6vw, 8px) clamp(15px, 2vw, 30px);
     border: 1px solid var(--main-color);
 }
-
 #task-input {
     flex: 1;
     border: none;
@@ -208,7 +185,6 @@ body {
     font-weight: 500;
     background: transparent;
 }
-
 #add-btn {
     background-color: var(--main-color);
     color: white;
@@ -225,7 +201,7 @@ body {
     transform: scale(1.05);
 }
 
-/* Выезжающая панель деталей */
+/* Панель деталей */
 .task-details {
     max-height: 0;
     overflow: hidden;
@@ -237,34 +213,28 @@ body {
     padding: 0 15px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
-
 .task-details.open {
     max-height: 400px;
     opacity: 1;
     margin-top: 12px;
     padding: clamp(15px, 2vw, 30px);
 }
-
 .details-row {
     display: flex;
     flex-wrap: wrap;
     gap: clamp(10px, 1.5vw, 20px);
 }
-
 .details-row-second {
     margin-top: 10px;
     align-items: flex-end;
 }
-
 .details-group {
     flex: 1;
     min-width: 140px;
 }
-
 .details-group.full-width {
     flex: 100%;
 }
-
 .details-group label {
     display: block;
     font-size: clamp(13px, 1.2vw, 18px);
@@ -272,7 +242,6 @@ body {
     color: #444;
     margin-bottom: 6px;
 }
-
 .details-group textarea {
     width: 100%;
     border: 1px solid #ddd;
@@ -294,12 +263,10 @@ body {
 .custom-time-input input[type="time"]:focus {
     border-color: var(--main-color);
 }
-
 .custom-date-input, .custom-time-input {
     position: relative;
     width: 100%;
 }
-
 .custom-date-input input[type="date"],
 .custom-time-input input[type="time"] {
     width: 100%;
@@ -314,7 +281,6 @@ body {
     transition: border-color 0.2s;
     color: #333;
 }
-
 .custom-date-input input[type="date"]::-webkit-calendar-picker-indicator {
     opacity: 0;
     cursor: pointer;
@@ -324,7 +290,6 @@ body {
     width: 100%;
     height: 100%;
 }
-
 .custom-date-input i {
     position: absolute;
     right: 12px;
@@ -333,7 +298,6 @@ body {
     color: #888;
     pointer-events: none;
 }
-
 .details-add-btn {
     background-color: var(--main-color);
     color: white;
@@ -364,14 +328,13 @@ body {
     font-size: clamp(14px, 1.2vw, 20px);
     margin: 0 0 10px 0;
 }
-
 #task-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-/*ЗАДАЧА*/
+/* Задача */
 .task-item {
     display: flex;
     flex-direction: column;
@@ -385,17 +348,14 @@ body {
     cursor: pointer;
     box-shadow: 0 2px 4px var(--shadow-color);
 }
-
 .task-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.08);
     background: var(--hover-card);
 }
-
 .task-item.new-task {
     animation: slideIn 0.3s ease forwards;
 }
-
 .task-item.removing {
     opacity: 0;
     transform: scale(0.9);
@@ -405,19 +365,17 @@ body {
     overflow: hidden;
     transition: all 0.3s ease;
 }
-
 .task-item .task-main {
     display: flex;
     align-items: center;
     width: 100%;
     pointer-events: auto;
+    gap: 8px;
 }
-
 .task-item input[type="checkbox"],
 .task-item .actions {
     pointer-events: auto;
 }
-
 .task-item .task-text {
     flex: 1;
     font-size: clamp(15px, 1.4vw, 24px);
@@ -438,7 +396,6 @@ body {
 .task-item.completed:hover {
     background: var(--completed-bg);
 }
-
 .task-item input[type="checkbox"] {
     width: clamp(20px, 2.5vw, 32px);
     height: clamp(20px, 2.5vw, 32px);
@@ -451,7 +408,6 @@ body {
 .task-item input[type="checkbox"]:hover {
     transform: scale(1.1);
 }
-
 .task-item .actions {
     display: flex;
     gap: 10px;
@@ -468,19 +424,40 @@ body {
     transform: scale(1.2);
 }
 
-/*БЛОК РАСКРЫТИЯ*/
+/* Приоритет (индикатор в списке) */
+.task-priority-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.priority-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+.priority-high .priority-dot { background: #e74c3c; }
+.priority-high .priority-label { color: #e74c3c; }
+.priority-medium .priority-dot { background: #f1c40f; }
+.priority-medium .priority-label { color: #f1c40f; }
+.priority-low .priority-dot { background: #27ae60; }
+.priority-low .priority-label { color: #27ae60; }
+
+/* Блок раскрытия */
 .task-meta-wrapper {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
     padding-top: 0;
 }
-
 .task-item.open .task-meta-wrapper {
     max-height: 500px;
     padding-top: 12px;
 }
-
 .task-meta {
     font-size: clamp(13px, 1.1vw, 18px);
     font-weight: 500;
@@ -492,18 +469,15 @@ body {
     border-top: 1px solid rgba(0,0,0,0.05);
     padding-top: 8px;
 }
-
 .task-meta .meta-item {
     display: flex;
     align-items: center;
     gap: 4px;
 }
-
 .task-meta i {
     font-size: clamp(13px, 1.1vw, 18px);
     flex-shrink: 0;
 }
-
 .task-desc-wrapper {
     display: flex;
     align-items: center;
@@ -512,7 +486,6 @@ body {
     min-width: 0;
     overflow: hidden;
 }
-
 .task-desc-text {
     display: block;
     max-height: 1.4em;
@@ -525,13 +498,11 @@ body {
     line-height: 1.4;
     transition: max-height 0.3s ease-in-out, white-space 0.3s ease-in-out;
 }
-
 .task-desc-text.expanded {
     max-height: 1000px;
     white-space: normal;
     text-overflow: clip;
 }
-
 .expand-desc-btn {
     cursor: pointer;
     color: var(--main-color);
@@ -544,11 +515,9 @@ body {
     user-select: none;
     white-space: nowrap;
 }
-
 .expand-desc-btn:hover {
     background-color: rgba(109, 139, 93, 0.15);
 }
-
 .task-desc-wrapper.no-btn .expand-desc-btn {
     display: none;
 }
@@ -558,7 +527,7 @@ body {
     100% { opacity: 1; transform: translateX(0); }
 }
 
-/*НИЖНЯЯ НАВИГАЦИЯ (ВКЛАДКИ)*/
+/* Нижняя навигация */
 .bottom-nav {
     display: flex;
     justify-content: space-between;
@@ -590,7 +559,7 @@ body {
     font-weight: 700;
 }
 
-/*ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ*/
+/* Всплывающее уведомление */
 #toast-container {
     position: fixed;
     top: 50%;
@@ -599,7 +568,6 @@ body {
     z-index: 9999;
     pointer-events: none;
 }
-
 .toast {
     background-color: #ffffff;
     border: 1px solid var(--main-color);
@@ -616,24 +584,60 @@ body {
     min-width: 250px;
     justify-content: center;
 }
-
 .toast.show {
     opacity: 1;
     transform: scale(1) translateY(0);
 }
-
 .toast-icon {
     font-size: 28px;
     color: var(--main-color);
 }
-
 .toast-message {
     font-size: 18px;
     font-weight: 600;
     color: #333;
 }
 
-/*МОДАЛЬНОЕ ОКНО*/
+/* Toast с отменой */
+.toast.undo-toast {
+    gap: 12px;
+    justify-content: space-between;
+    padding: 12px 16px 8px 16px;
+    min-width: 280px;
+    max-width: 400px;
+    position: relative;
+    overflow: hidden;
+}
+.toast-undo-btn {
+    background: transparent;
+    border: none;
+    color: var(--main-color);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.toast-undo-btn:hover {
+    background-color: rgba(109, 139, 93, 0.15);
+    color: var(--main-dark);
+}
+.toast-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background-color: var(--main-color);
+    border-radius: 0 0 16px 16px;
+    animation: shrink var(--duration, 3s) linear forwards;
+}
+@keyframes shrink {
+    0% { width: 100%; }
+    100% { width: 0%; }
+}
+
+/* Модальное окно */
 .modal {
     display: none;
     position: fixed;
@@ -644,11 +648,9 @@ body {
     align-items: center;
     justify-content: center;
 }
-
 .modal.show {
     display: flex;
 }
-
 .modal-content {
     background: white;
     padding: 25px;
@@ -657,12 +659,10 @@ body {
     max-width: 420px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 }
-
 .modal-content h3 {
     margin: 0 0 20px 0;
     color: #333;
 }
-
 .modal-content input[type="text"],
 .modal-content textarea {
     width: 100%;
@@ -672,59 +672,54 @@ body {
     border-radius: 12px;
     font-size: 16px;
 }
-
 .modal-content textarea {
     min-height: 100px;
     resize: vertical;
 }
-
 .modal-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     margin-bottom: 20px;
 }
-
 .modal-row label {
     display: block;
     margin-bottom: 6px;
     font-weight: 600;
     color: #555;
 }
-
 .modal-buttons {
     display: flex;
     gap: 12px;
     margin-top: 10px;
 }
-
-.primary-btn, .secondary-btn {
+.primary-btn {
     flex: 1;
     padding: 14px;
     border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
     font-size: 16px;
-}
-
-.primary-btn {
     background: var(--main-color);
     color: white;
     border: none;
 }
-
 .secondary-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
     background: #f0f0f0;
     color: #333;
     border: none;
 }
-
 .new-task-bar {
     display: flex;
     align-items: center;
     gap: 8px;
 }
-
 .detailed-btn {
     background: #f0f0f0;
     color: #666;
@@ -735,20 +730,16 @@ body {
     cursor: pointer;
     font-size: 18px;
 }
-
 .detailed-btn:hover {
     background: #e0e0e0;
 }
 
 /* Адаптация под мобильные */
 @media (max-width: 480px) {
-    .modal-content {
-        padding: 20px;
-        margin: 10px;
-    }
+    .modal-content { padding: 20px; margin: 10px; }
 }
 
-/*ПРОФИЛЬ*/
+/* Профиль */
 .profile-container {
     display: none;
     flex-direction: column;
@@ -758,7 +749,6 @@ body {
     overflow-y: auto;
     background: var(--background);
 }
-
 .profile-content {
     width: 100%;
     max-width: 380px;
@@ -769,7 +759,6 @@ body {
     text-align: center;
     margin-top: 10px;
 }
-
 .avatar-placeholder {
     width: 128px;
     height: 128px;
@@ -785,7 +774,6 @@ body {
     border: 6px solid var(--background);
     position: relative;
 }
-
 .avatar-placeholder::after {
     content: '';
     position: absolute;
@@ -793,20 +781,17 @@ body {
     border-radius: 50%;
     border: 2px solid rgba(255,255,255,0.6);
 }
-
 #user-name {
     font-size: 26px;
     font-weight: 700;
     color: #2c2c2c;
     margin: 8px 0 4px;
 }
-
 #user-email {
     color: #666;
     font-size: 15.5px;
     margin-bottom: 32px;
 }
-
 .google-btn {
     display: flex;
     align-items: center;
@@ -826,19 +811,16 @@ body {
     transition: all 0.25s ease;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-
 .google-btn:hover {
     border-color: var(--main-color);
     background: #f8fff0;
     transform: translateY(-3px);
     box-shadow: 0 6px 16px rgba(109, 139, 93, 0.2);
 }
-
 .google-btn i {
     font-size: 22px;
     color: #DB4437;
 }
-
 .profile-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -848,13 +830,11 @@ body {
     border-radius: 20px;
     text-align: center;
 }
-
 .profile-stats div {
     font-size: 14.5px;
     color: #555;
     font-weight: 500;
 }
-
 .profile-stats strong {
     display: block;
     font-size: 26px;
@@ -862,7 +842,6 @@ body {
     color: var(--main-color);
     margin-top: 6px;
 }
-
 .logout-btn {
     margin-top: 20px;
     color: #888;
@@ -875,14 +854,13 @@ body {
     color: #e74c3c;
 }
 
-/*НАСТРОЙКИ*/
+/* Настройки */
 .settings-container {
     padding: 20px 15px 100px 15px;
     height: 100%;
     overflow-y: auto;
     background: var(--background);
 }
-
 .settings-section {
     background: white;
     border-radius: 20px;
@@ -890,7 +868,6 @@ body {
     margin-bottom: 16px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
-
 .settings-section h4 {
     margin: 0 0 14px 0;
     color: #444;
@@ -899,7 +876,6 @@ body {
     align-items: center;
     gap: 8px;
 }
-
 .toggle-item {
     display: flex;
     justify-content: space-between;
@@ -911,7 +887,6 @@ body {
 .toggle-item:last-child {
     border-bottom: none;
 }
-
 .switch {
     position: relative;
     display: inline-block;
@@ -952,7 +927,6 @@ input:checked + .slider:before {
     gap: 12px;
     justify-content: center;
 }
-
 .theme-option {
     width: 48px;
     height: 48px;
@@ -962,12 +936,10 @@ input:checked + .slider:before {
     box-shadow: 0 3px 8px rgba(0,0,0,0.1);
     transition: all 0.2s;
 }
-
 .theme-option.active {
     border-color: #222;
     transform: scale(1.12);
 }
-
 .theme-option::after {
     content: '✓';
     position: absolute;
@@ -978,11 +950,11 @@ input:checked + .slider:before {
     opacity: 0;
     text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
-
 .theme-option.active::after {
     opacity: 1;
 }
 
+/* Кнопки настроек */
 .settings-btn {
     width: 100%;
     padding: 15px;
@@ -993,15 +965,10 @@ input:checked + .slider:before {
     cursor: pointer;
     border: none;
 }
-
 .danger {
     background: #ff6b6b;
     color: white;
 }
-
-/* ... остальной CSS без изменений, добавляем в конец: */
-
-/* ===== ПРИОРИТЕТЫ ===== */
 .priority-select {
     width: 100%;
     border: 1px solid #ddd;
@@ -1017,109 +984,4 @@ input:checked + .slider:before {
 }
 .priority-select:focus {
     border-color: var(--main-color);
-}
-
-/* Приоритет в карточке задачи */
-.task-priority {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-right: 8px;
-    font-size: clamp(12px, 1vw, 16px);
-    font-weight: 500;
-}
-
-.priority-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-}
-
-.priority-high .priority-dot { background: #e74c3c; }
-.priority-medium .priority-dot { background: #f1c40f; }
-.priority-low .priority-dot { background: #27ae60; }
-.priority-high .priority-label { color: #e74c3c; }
-.priority-medium .priority-label { color: #f1c40f; }
-.priority-low .priority-label { color: #27ae60; }
-
-/* Сортировка по приоритету: высокие выше */
-.task-item .task-main {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    pointer-events: auto;
-    gap: 8px;
-}
-
-/* ===== ИНДИКАТОР ПРИОРИТЕТА В СПИСКЕ ===== */
-.task-priority-indicator {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-left: 6px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.priority-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-}
-
-.priority-high .priority-dot { background: #e74c3c; }
-.priority-high .priority-label { color: #e74c3c; }
-
-.priority-medium .priority-dot { background: #f1c40f; }
-.priority-medium .priority-label { color: #f1c40f; }
-
-.priority-low .priority-dot { background: #27ae60; }
-.priority-low .priority-label { color: #27ae60; }
-
-/* ===== TOAST С ОТМЕНОЙ И ПРОГРЕСС-БАРОМ ===== */
-.toast.undo-toast {
-    gap: 12px;
-    justify-content: space-between;
-    padding: 12px 16px 8px 16px; /* Нижний отступ для полоски */
-    min-width: 280px;
-    max-width: 400px;
-    position: relative;
-    overflow: hidden;
-}
-
-.toast-undo-btn {
-    background: transparent;
-    border: none;
-    color: var(--main-color);
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 15px;
-    padding: 6px 12px;
-    border-radius: 8px;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-.toast-undo-btn:hover {
-    background-color: rgba(109, 139, 93, 0.15);
-    color: var(--main-dark);
-}
-
-/* Убывающая полоска */
-.toast-progress-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 4px;
-    background-color: var(--main-color);
-    border-radius: 0 0 16px 16px;
-    animation: shrink 3s linear forwards;
-}
-
-@keyframes shrink {
-    0% { width: 100%; }
-    100% { width: 0%; }
 }

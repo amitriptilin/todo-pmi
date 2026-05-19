@@ -1,35 +1,40 @@
+const PRIORITY_WEIGHT = { high: 0, medium: 1, low: 2, null: 3 };
+const THEMES = [
+    { name: "Зелёная", color: "#6D8B5D", id: "default" },
+    { name: "Красная", color: "#D96C6C", id: "red" },
+    { name: "Синяя",   color: "#4A8BB8", id: "blue" },
+    { name: "Фиолетовая", color: "#9B7EBD", id: "purple" },
+    { name: "Серая",   color: "#6F7A8A", id: "gray" },
+    { name: "Тёмная",  color: "#2C3E50", id: "dark" }
+];
+
+
 let tasks = [];
 let currentTab = 'today';
 let editingTaskId = null;
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme') || 'default';
     document.documentElement.setAttribute('data-theme', savedTheme);
 
     const storedTasks = localStorage.getItem('tasks');
-    if (storedTasks) {
-        tasks = JSON.parse(storedTasks);
-    } else {
-        tasks = [];
-        saveTasks();
-    }
+    tasks = storedTasks ? JSON.parse(storedTasks) : [];
+    saveTasks();
 
     initEventListeners();
     initSettings();
     renderTasks();
 });
 
-// ИНИЦИАЛИЗАЦИЯ
+
 function initEventListeners() {
     document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => {
-            switchTab(item.dataset.tab);
-        });
+        item.addEventListener('click', () => switchTab(item.dataset.tab));
     });
 
     const addBtn = document.getElementById('add-btn');
     const taskInput = document.getElementById('task-input');
-
     addBtn.addEventListener('click', addSimpleTask);
     taskInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') addSimpleTask();
@@ -45,27 +50,18 @@ function initEventListeners() {
     document.getElementById('save-edit').addEventListener('click', saveEditedTask);
 }
 
-// НАСТРОЙКИ
-function initSettings() {
-    const themes = [
-        { name: "Зелёная", color: "#6D8B5D", id: "default" },
-        { name: "Красная", color: "#D96C6C", id: "red" },
-        { name: "Синяя",   color: "#4A8BB8", id: "blue" },
-        { name: "Фиолетовая", color: "#9B7EBD", id: "purple" },
-        { name: "Серая",   color: "#6F7A8A", id: "gray" },
-        { name: "Тёмная",  color: "#2C3E50", id: "dark" }
-    ];
 
+function initSettings() {
     const container = document.getElementById('theme-options');
     container.innerHTML = '';
 
-    themes.forEach(theme => {
+    THEMES.forEach(theme => {
         const div = document.createElement('div');
         div.className = 'theme-option';
         div.style.background = theme.color;
         div.title = theme.name;
         div.dataset.id = theme.id;
-        
+
         const currentTheme = localStorage.getItem('theme') || 'default';
         if (theme.id === currentTheme) div.classList.add('active');
 
@@ -74,7 +70,6 @@ function initSettings() {
             div.classList.add('active');
             applyTheme(theme.id);
         });
-        
         container.appendChild(div);
     });
 
@@ -100,10 +95,10 @@ function applyTheme(themeId) {
     if (themeId === currentTheme) return;
     document.documentElement.setAttribute('data-theme', themeId);
     localStorage.setItem('theme', themeId);
-    showToast(`Тема изменена`);
+    showToast('Тема изменена');
 }
 
-// ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+
 function switchTab(tab) {
     currentTab = tab;
 
@@ -111,72 +106,68 @@ function switchTab(tab) {
         item.classList.toggle('active', item.dataset.tab === tab);
     });
 
-    const newTaskArea = document.querySelector('.new-task-area');
-    const todayList = document.getElementById('today-list');
-    const profileContainer = document.getElementById('profile-container');
-    const settingsContainer = document.getElementById('settings-container');
+    const areas = {
+        today: { list: 'today-list', area: '.new-task-area' },
+        list: { list: 'today-list', area: '.new-task-area' },
+        profile: { list: 'profile-container', area: null },
+        settings: { list: 'settings-container', area: null }
+    };
 
-    todayList.style.display = 'none';
-    profileContainer.style.display = 'none';
-    settingsContainer.style.display = 'none';
-    newTaskArea.style.display = 'none';
+    document.getElementById('today-list').style.display = 'none';
+    document.getElementById('profile-container').style.display = 'none';
+    document.getElementById('settings-container').style.display = 'none';
+    document.querySelector('.new-task-area').style.display = 'none';
 
-    if (tab === 'today' || tab === 'list') {
-        todayList.style.display = 'block';
-        newTaskArea.style.display = 'block';
-        document.getElementById('listTitle').textContent = tab === 'today' ? 'СЕГОДНЯ' : 'ВСЕ ЗАДАЧИ';
-        renderTasks();
-    } 
-    else if (tab === 'profile') {
-        profileContainer.style.display = 'flex';
-    } 
-    else if (tab === 'settings') {
-        settingsContainer.style.display = 'block';
+    const info = areas[tab];
+    if (info) {
+        document.getElementById(info.list).style.display = 'block';
+        if (info.area) document.querySelector(info.area).style.display = 'block';
+        const title = document.getElementById('listTitle');
+        title.textContent = tab === 'today' ? 'СЕГОДНЯ' : 'ВСЕ ЗАДАЧИ';
+        if (tab === 'today' || tab === 'list') renderTasks();
     }
 }
 
-// ФИЛЬТРАЦИЯ, СОРТИРОВКА И ДАТЫ
-function getFilteredTasks() {
-    const priorityWeight = { 'high': 0, 'medium': 1, 'low': 2, null: 3 };
 
+function getFilteredTasks() {
     if (currentTab === 'today') {
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = getTodayStr();
         return tasks
             .filter(task => task.date === todayStr)
             .sort((a, b) => {
-                const pA = priorityWeight[a.priority || null] ?? 3;
-                const pB = priorityWeight[b.priority || null] ?? 3;
+                const pA = PRIORITY_WEIGHT[a.priority || null] ?? 3;
+                const pB = PRIORITY_WEIGHT[b.priority || null] ?? 3;
                 if (pA !== pB) return pA - pB;
                 return (a.time || '99:99').localeCompare(b.time || '99:99');
             });
-    } else {
-        const weekRange = getWeekRange();
-        const monthRange = getMonthRange();
-
-        const thisWeek = [], thisMonth = [], others = [];
-
-        tasks.forEach(task => {
-            if (!task.date) { others.push(task); return; }
-            const taskDate = new Date(task.date);
-            if (taskDate >= weekRange.start && taskDate <= weekRange.end) thisWeek.push(task);
-            else if (taskDate >= monthRange.start && taskDate <= monthRange.end) thisMonth.push(task);
-            else others.push(task);
-        });
-
-        const sortFn = (arr) => arr.sort((a, b) => {
-            const pA = priorityWeight[a.priority || null] ?? 3;
-            const pB = priorityWeight[b.priority || null] ?? 3;
-            if (pA !== pB) return pA - pB;
-            if (a.date !== b.date) return a.date.localeCompare(b.date);
-            return (a.time || '99:99').localeCompare(b.time || '99:99');
-        });
-
-        return {
-            thisWeek: sortFn(thisWeek),
-            thisMonth: sortFn(thisMonth),
-            others: sortFn(others)
-        };
     }
+
+    const weekRange = getWeekRange();
+    const monthRange = getMonthRange();
+
+    const thisWeek = [], thisMonth = [], others = [];
+
+    tasks.forEach(task => {
+        if (!task.date) { others.push(task); return; }
+        const taskDate = new Date(task.date);
+        if (taskDate >= weekRange.start && taskDate <= weekRange.end) thisWeek.push(task);
+        else if (taskDate >= monthRange.start && taskDate <= monthRange.end) thisMonth.push(task);
+        else others.push(task);
+    });
+
+    const sortFn = (arr) => arr.sort((a, b) => {
+        const pA = PRIORITY_WEIGHT[a.priority || null] ?? 3;
+        const pB = PRIORITY_WEIGHT[b.priority || null] ?? 3;
+        if (pA !== pB) return pA - pB;
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        return (a.time || '99:99').localeCompare(b.time || '99:99');
+    });
+
+    return {
+        thisWeek: sortFn(thisWeek),
+        thisMonth: sortFn(thisMonth),
+        others: sortFn(others)
+    };
 }
 
 function getTodayStr() {
@@ -204,7 +195,7 @@ function getMonthRange() {
     return { start, end };
 }
 
-// ДОБАВЛЕНИЕ И РЕДАКТИРОВАНИЕ
+
 function addSimpleTask() {
     const input = document.getElementById('task-input');
     const text = input.value.trim();
@@ -283,56 +274,57 @@ function closeModal() {
     editingTaskId = null;
 }
 
+
+function buildPriorityHtml(task) {
+    if (!task.priority) return '';
+    const label = task.priority === 'high' ? 'Высокий' : task.priority === 'medium' ? 'Средний' : 'Низкий';
+    return `
+        <span class="task-priority-indicator priority-${task.priority}">
+            <span class="priority-dot"></span>
+            <span class="priority-label">${label}</span>
+        </span>
+    `;
+}
+
+function buildMetaHtml(task) {
+    const parts = [];
+    if (task.date) {
+        const dateObj = new Date(task.date);
+        const formatted = dateObj.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+        const dateStr = task.time ? `${formatted}, ${task.time}` : formatted;
+        parts.push(`<span class="meta-item"><i class="far fa-calendar-alt"></i> ${dateStr}</span>`);
+    } else if (task.time) {
+        parts.push(`<span class="meta-item"><i class="far fa-clock"></i> ${task.time}</span>`);
+    }
+    if (task.desc) {
+        parts.push(`
+            <span class="task-desc-wrapper">
+                <i class="far fa-file-alt"></i>
+                <span class="task-desc-text">${task.desc}</span>
+                <span class="expand-desc-btn">...</span>
+            </span>
+        `);
+    }
+    if (parts.length === 0) return '';
+    return `<div class="task-meta">${parts.join('')}</div>`;
+}
+
 function createTaskElement(task) {
     const li = document.createElement('li');
     li.className = `task-item ${task.completed ? 'completed' : ''}`;
     li.dataset.id = task.id;
 
-    let priorityHtml = '';
-    if (task.priority) {
-        const priorityClass = `priority-${task.priority}`;
-        const priorityLabel = task.priority === 'high' ? 'Высокий' : task.priority === 'medium' ? 'Средний' : 'Низкий';
-        priorityHtml = `
-            <span class="task-priority-indicator ${priorityClass}">
-                <span class="priority-dot"></span>
-                <span class="priority-label">${priorityLabel}</span>
-            </span>
-        `;
-    }
-
-    let metaHtml = '';
-    if (task.date || task.time || task.desc) {
-        metaHtml = '<div class="task-meta">';
-        if (task.date) {
-            const dateObj = new Date(task.date);
-            const formatted = dateObj.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
-            const dateStr = task.time ? `${formatted}, ${task.time}` : formatted;
-            metaHtml += `<span class="meta-item"><i class="far fa-calendar-alt"></i> ${dateStr}</span>`;
-        } else if (task.time) {
-            metaHtml += `<span class="meta-item"><i class="far fa-clock"></i> ${task.time}</span>`;
-        }
-        if (task.desc) {
-            metaHtml += `
-                <span class="task-desc-wrapper">
-                    <i class="far fa-file-alt"></i>
-                    <span class="task-desc-text">${task.desc}</span>
-                    <span class="expand-desc-btn">...</span>
-                </span>`;
-        }
-        metaHtml += '</div>';
-    }
-
     li.innerHTML = `
         <div class="task-main">
             <input type="checkbox" ${task.completed ? 'checked' : ''}>
             <span class="task-text">${task.text}</span>
-            ${priorityHtml}
+            ${buildPriorityHtml(task)}
             <div class="actions">
                 <i class="fas fa-edit edit-btn"></i>
                 <i class="fas fa-trash-alt delete-btn"></i>
             </div>
         </div>
-        <div class="task-meta-wrapper">${metaHtml}</div>
+        <div class="task-meta-wrapper">${buildMetaHtml(task)}</div>
     `;
 
     li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
@@ -369,6 +361,7 @@ function createTaskElement(task) {
     return li;
 }
 
+
 function toggleTask(id) {
     const task = tasks.find(t => t.id === id);
     if (task) task.completed = !task.completed;
@@ -377,13 +370,10 @@ function toggleTask(id) {
 }
 
 function deleteTask(id, element) {
-    // Визуальное удаление (плавное исчезновение)
     element.classList.add('removing');
 
-    // Находим задачу в массиве
     const task = tasks.find(t => t.id === id);
     if (!task) {
-        // Если задача не найдена, отменяем визуальное удаление
         element.classList.remove('removing');
         return;
     }
@@ -391,34 +381,29 @@ function deleteTask(id, element) {
     let isCancelled = false;
     let isExpired = false;
 
-    // Функция, вызываемая при нажатии "Отменить"
     const onUndo = () => {
-        if (isExpired) return; // Если таймер уже истек, отмена невозможна
+        if (isExpired) return;
         isCancelled = true;
-        // Возвращаем задачу в нормальное состояние
         element.classList.remove('removing');
-        updateProgress(); // Обновляем прогресс, так как задача вернулась
+        updateProgress();
     };
 
-    // Функция, вызываемая по истечении времени toast'а
     const onExpire = () => {
-        if (isCancelled) return; // Если отменили, ничего не делаем
+        if (isCancelled) return;
         isExpired = true;
-        // Финальное удаление
         tasks = tasks.filter(t => t.id !== id);
         saveTasks();
-        renderTasks(); // Полная перерисовка — задача исчезает навсегда
+        renderTasks();
     };
 
-    // Показываем toast с возможностью отмены
-    showUndoToast('Задача удалена', onUndo, onExpire, 5000);
+    showUndoToast('Задача удалена', onUndo, onExpire, 3000);
 }
 
 function saveTasks() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-// ПРОГРЕСС
+
 function updateProgress() {
     let total = 0, completed = 0;
     if (currentTab === 'today') {
@@ -436,7 +421,6 @@ function updateProgress() {
     document.getElementById('progress-count').innerHTML = `${completed}/${total} задач`;
 }
 
-// ОТРИСОВКА
 function renderTasks() {
     const list = document.getElementById('task-list');
     list.innerHTML = '';
@@ -448,39 +432,40 @@ function renderTasks() {
         } else {
             filtered.forEach(task => list.appendChild(createTaskElement(task)));
         }
-    } else {
-        const grouped = getFilteredTasks();
-        const sections = [
-            { title: "На этой неделе", tasks: grouped.thisWeek },
-            { title: "В этом месяце", tasks: grouped.thisMonth },
-            { title: "Остальные", tasks: grouped.others }
-        ];
+        updateProgress();
+        return;
+    }
 
-        let hasContent = false;
-        sections.forEach(section => {
-            if (section.tasks.length > 0) {
-                hasContent = true;
-                const header = document.createElement('li');
-                header.className = 'task-item';
-                header.style.cssText = 'cursor:default;background:transparent;box-shadow:none;padding:8px 0;';
-                header.innerHTML = `<div style="font-weight:700;color:var(--main-color);">${section.title}</div>`;
-                list.appendChild(header);
-                section.tasks.forEach(task => list.appendChild(createTaskElement(task)));
-            }
-        });
+    const grouped = getFilteredTasks();
+    const sections = [
+        { title: "На этой неделе", tasks: grouped.thisWeek },
+        { title: "В этом месяце", tasks: grouped.thisMonth },
+        { title: "Остальные", tasks: grouped.others }
+    ];
 
-        if (!hasContent) {
-            list.innerHTML = `<li class="task-item" style="text-align:center;padding:40px;background:transparent;box-shadow:none;color:#aaa;">Список задач пуст</li>`;
+    let hasContent = false;
+    sections.forEach(section => {
+        if (section.tasks.length > 0) {
+            hasContent = true;
+            const header = document.createElement('li');
+            header.className = 'task-item';
+            header.style.cssText = 'cursor:default;background:transparent;box-shadow:none;padding:8px 0;';
+            header.innerHTML = `<div style="font-weight:700;color:var(--main-color);">${section.title}</div>`;
+            list.appendChild(header);
+            section.tasks.forEach(task => list.appendChild(createTaskElement(task)));
         }
+    });
+
+    if (!hasContent) {
+        list.innerHTML = `<li class="task-item" style="text-align:center;padding:40px;background:transparent;box-shadow:none;color:#aaa;">Список задач пуст</li>`;
     }
     updateProgress();
 }
 
-// УВЕДОМЛЕНИЯ
 function showToast(message, duration = 2500) {
     const container = document.getElementById('toast-container');
-    const existingToast = container.querySelector('.toast');
-    if (existingToast) existingToast.remove();
+    const existing = container.querySelector('.toast');
+    if (existing) existing.remove();
 
     const toast = document.createElement('div');
     toast.className = 'toast';
@@ -489,7 +474,6 @@ function showToast(message, duration = 2500) {
         <span class="toast-message">${message}</span>
     `;
     container.appendChild(toast);
-
     setTimeout(() => toast.classList.add('show'), 10);
     setTimeout(() => {
         toast.classList.remove('show');
@@ -499,8 +483,8 @@ function showToast(message, duration = 2500) {
 
 function showUndoToast(message, onUndo, onExpire, duration = 3000) {
     const container = document.getElementById('toast-container');
-    const existingToast = container.querySelector('.toast');
-    if (existingToast) existingToast.remove();
+    const existing = container.querySelector('.toast');
+    if (existing) existing.remove();
 
     const toast = document.createElement('div');
     toast.className = 'toast undo-toast';
@@ -509,29 +493,32 @@ function showUndoToast(message, onUndo, onExpire, duration = 3000) {
         <button class="toast-undo-btn">Отменить</button>
         <div class="toast-progress-bar"></div>
     `;
+
+    toast.style.setProperty('--duration', duration + 'ms');
+
     container.appendChild(toast);
     setTimeout(() => toast.classList.add('show'), 10);
 
-    // Таймер на автоматическое завершение (3 секунды)
     let timeoutId = setTimeout(() => {
         toast.classList.remove('show');
-        setTimeout(() => {
+        toast.addEventListener('transitionend', function handler() {
+            toast.removeEventListener('transitionend', handler);
             toast.remove();
             if (onExpire) onExpire();
-        }, 300);
+        });
     }, duration);
 
-    // Обработчик кнопки "Отменить"
     const undoHandler = () => {
         if (timeoutId) {
             clearTimeout(timeoutId);
             timeoutId = null;
         }
         toast.classList.remove('show');
-        setTimeout(() => {
+        toast.addEventListener('transitionend', function handler() {
+            toast.removeEventListener('transitionend', handler);
             toast.remove();
             if (onUndo) onUndo();
-        }, 300);
+        });
     };
 
     toast.querySelector('.toast-undo-btn').addEventListener('click', undoHandler);
