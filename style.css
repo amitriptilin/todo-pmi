@@ -998,3 +998,84 @@ input:checked + .slider:before {
     background: #ff6b6b;
     color: white;
 }
+
+/* ... остальной CSS без изменений, добавляем в конец: */
+
+/* ===== ПРИОРИТЕТЫ ===== */
+.priority-select {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: clamp(10px, 1.2vw, 16px);
+    padding: clamp(10px, 1vw, 16px);
+    font-size: clamp(14px, 1.2vw, 20px);
+    font-weight: 500;
+    font-family: inherit;
+    outline: none;
+    background: var(--background);
+    transition: border-color 0.2s;
+    color: #333;
+}
+.priority-select:focus {
+    border-color: var(--main-color);
+}
+
+/* Приоритет в карточке задачи */
+.task-priority {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 8px;
+    font-size: clamp(12px, 1vw, 16px);
+    font-weight: 500;
+}
+
+.priority-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.priority-high .priority-dot { background: #e74c3c; }
+.priority-medium .priority-dot { background: #f1c40f; }
+.priority-low .priority-dot { background: #27ae60; }
+.priority-high .priority-label { color: #e74c3c; }
+.priority-medium .priority-label { color: #f1c40f; }
+.priority-low .priority-label { color: #27ae60; }
+
+/* Сортировка по приоритету: высокие выше */
+.task-item .task-main {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    pointer-events: auto;
+    gap: 8px;
+}
+
+/* ===== ИНДИКАТОР ПРИОРИТЕТА В СПИСКЕ ===== */
+.task-priority-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.priority-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.priority-high .priority-dot { background: #e74c3c; }
+.priority-high .priority-label { color: #e74c3c; }
+
+.priority-medium .priority-dot { background: #f1c40f; }
+.priority-medium .priority-label { color: #f1c40f; }
+
+.priority-low .priority-dot { background: #27ae60; }
+.priority-low .priority-label { color: #27ae60; }

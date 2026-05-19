@@ -12,6 +12,7 @@
     
     <div class="app-wrapper">
         <div class="app-container">
+            <!-- Шапка -->
             <header class="header">
                 <h1>ЗАДАЧНИК</h1>
                 <div class="progress-wrapper">
@@ -22,6 +23,7 @@
                 </div>
             </header>
 
+            <!-- Добавление задачи -->
             <div class="new-task-area">
                 <div class="new-task-bar">
                     <input type="text" id="task-input" placeholder="Новая задача...">
@@ -50,16 +52,26 @@
                                 <input type="time" id="task-time">
                             </div>
                         </div>
+                        <div class="details-group">
+                            <label for="task-priority"><i class="fas fa-exclamation-triangle"></i> Приоритет</label>
+                            <select id="task-priority" class="priority-select">
+                                <option value="low">Низкий</option>
+                                <option value="medium" selected>Средний</option>
+                                <option value="high">Высокий</option>
+                            </select>
+                        </div>
                         <button id="add-detailed-btn" class="details-add-btn">Добавить</button>
                     </div>
                 </div>
             </div>
 
+            <!-- Контент вкладок -->
             <div class="task-list-container" id="today-list">
                 <h3 class="list-title" id="listTitle">СЕГОДНЯ</h3>
                 <ul id="task-list"></ul>
             </div>
 
+            <!-- Профиль -->
             <div class="profile-container" id="profile-container" style="display: none;">
                 <div class="profile-content">
                     <div class="avatar-placeholder">
@@ -79,6 +91,7 @@
                 </div>
             </div>
 
+            <!-- Настройки -->
             <div class="settings-container" id="settings-container" style="display: none;">
                 <h3 class="list-title">НАСТРОЙКИ</h3>
                 
@@ -112,6 +125,7 @@
                 </div>
             </div>
 
+            <!-- Нижняя навигация -->
             <footer class="bottom-nav">
                 <div class="nav-item active" data-tab="today">
                     <i class="fas fa-calendar-day"></i><span>Сегодня</span>
@@ -129,6 +143,7 @@
         </div>
     </div>
 
+    <!-- Модальное окно редактирования -->
     <div id="edit-modal" class="modal">
         <div class="modal-content">
             <h3>Редактировать задачу</h3>
@@ -143,6 +158,14 @@
                 <div>
                     <label>Время</label>
                     <input type="time" id="edit-time">
+                </div>
+                <div>
+                    <label>Приоритет</label>
+                    <select id="edit-priority" class="priority-select">
+                        <option value="low">Низкий</option>
+                        <option value="medium">Средний</option>
+                        <option value="high">Высокий</option>
+                    </select>
                 </div>
             </div>
 

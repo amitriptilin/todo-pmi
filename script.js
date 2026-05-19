@@ -97,10 +97,7 @@ function initSettings() {
 
 function applyTheme(themeId) {
     const currentTheme = localStorage.getItem('theme') || 'default';
-    if (themeId === currentTheme) {
-        return;
-    }
-
+    if (themeId === currentTheme) return;
     document.documentElement.setAttribute('data-theme', themeId);
     localStorage.setItem('theme', themeId);
     showToast(`Тема изменена`);
@@ -138,13 +135,20 @@ function switchTab(tab) {
     }
 }
 
-// ФИЛЬТРАЦИЯ И ДАТЫ
+// ФИЛЬТРАЦИЯ, СОРТИРОВКА И ДАТЫ
 function getFilteredTasks() {
+    const priorityWeight = { 'high': 0, 'medium': 1, 'low': 2, null: 3 };
+
     if (currentTab === 'today') {
         const todayStr = new Date().toISOString().split('T')[0];
         return tasks
             .filter(task => task.date === todayStr)
-            .sort((a, b) => (a.time || '99:99').localeCompare(b.time || '99:99'));
+            .sort((a, b) => {
+                const pA = priorityWeight[a.priority || null] ?? 3;
+                const pB = priorityWeight[b.priority || null] ?? 3;
+                if (pA !== pB) return pA - pB;
+                return (a.time || '99:99').localeCompare(b.time || '99:99');
+            });
     } else {
         const weekRange = getWeekRange();
         const monthRange = getMonthRange();
@@ -160,6 +164,9 @@ function getFilteredTasks() {
         });
 
         const sortFn = (arr) => arr.sort((a, b) => {
+            const pA = priorityWeight[a.priority || null] ?? 3;
+            const pB = priorityWeight[b.priority || null] ?? 3;
+            if (pA !== pB) return pA - pB;
             if (a.date !== b.date) return a.date.localeCompare(b.date);
             return (a.time || '99:99').localeCompare(b.time || '99:99');
         });
@@ -183,11 +190,9 @@ function getWeekRange() {
     const monday = new Date(now);
     monday.setDate(now.getDate() + mondayOffset);
     monday.setHours(0, 0, 0, 0);
-
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
     sunday.setHours(23, 59, 59, 999);
-
     return { start: monday, end: sunday };
 }
 
@@ -211,7 +216,8 @@ function addSimpleTask() {
         completed: false,
         date: getTodayStr(),
         time: null,
-        desc: null
+        desc: null,
+        priority: 'medium'
     });
 
     input.value = '';
@@ -230,13 +236,15 @@ function addDetailedTask() {
         completed: false,
         date: document.getElementById('task-date').value || null,
         time: document.getElementById('task-time').value || null,
-        desc: document.getElementById('task-desc').value.trim() || null
+        desc: document.getElementById('task-desc').value.trim() || null,
+        priority: document.getElementById('task-priority').value || 'medium'
     });
 
     document.getElementById('task-input').value = '';
     document.getElementById('task-date').value = '';
     document.getElementById('task-time').value = '';
     document.getElementById('task-desc').value = '';
+    document.getElementById('task-priority').value = 'medium';
     document.getElementById('taskDetails').classList.remove('open');
 
     saveTasks();
@@ -250,6 +258,7 @@ function openEditModal(task) {
     document.getElementById('edit-desc').value = task.desc || '';
     document.getElementById('edit-date').value = task.date || '';
     document.getElementById('edit-time').value = task.time || '';
+    document.getElementById('edit-priority').value = task.priority || 'medium';
     document.getElementById('edit-modal').classList.add('show');
 }
 
@@ -261,6 +270,7 @@ function saveEditedTask() {
         task.desc = document.getElementById('edit-desc').value.trim() || null;
         task.date = document.getElementById('edit-date').value || null;
         task.time = document.getElementById('edit-time').value || null;
+        task.priority = document.getElementById('edit-priority').value || 'medium';
     }
     closeModal();
     saveTasks();
@@ -273,11 +283,22 @@ function closeModal() {
     editingTaskId = null;
 }
 
-// РАБОТА С ЗАДАЧАМИ
 function createTaskElement(task) {
     const li = document.createElement('li');
     li.className = `task-item ${task.completed ? 'completed' : ''}`;
     li.dataset.id = task.id;
+
+    let priorityHtml = '';
+    if (task.priority) {
+        const priorityClass = `priority-${task.priority}`;
+        const priorityLabel = task.priority === 'high' ? 'Высокий' : task.priority === 'medium' ? 'Средний' : 'Низкий';
+        priorityHtml = `
+            <span class="task-priority-indicator ${priorityClass}">
+                <span class="priority-dot"></span>
+                <span class="priority-label">${priorityLabel}</span>
+            </span>
+        `;
+    }
 
     let metaHtml = '';
     if (task.date || task.time || task.desc) {
@@ -305,6 +326,7 @@ function createTaskElement(task) {
         <div class="task-main">
             <input type="checkbox" ${task.completed ? 'checked' : ''}>
             <span class="task-text">${task.text}</span>
+            ${priorityHtml}
             <div class="actions">
                 <i class="fas fa-edit edit-btn"></i>
                 <i class="fas fa-trash-alt delete-btn"></i>
@@ -371,7 +393,6 @@ function saveTasks() {
 // ПРОГРЕСС
 function updateProgress() {
     let total = 0, completed = 0;
-
     if (currentTab === 'today') {
         const todayStr = getTodayStr();
         const todayTasks = tasks.filter(t => t.date === todayStr);
@@ -381,7 +402,6 @@ function updateProgress() {
         total = tasks.length;
         completed = tasks.filter(t => t.completed).length;
     }
-
     const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
     document.getElementById('progress-circle').style.setProperty('--progress', percent + '%');
     document.getElementById('progress-text').textContent = `${percent}%`;
@@ -432,9 +452,7 @@ function renderTasks() {
 function showToast(message, duration = 2500) {
     const container = document.getElementById('toast-container');
     const existingToast = container.querySelector('.toast');
-    if (existingToast) {
-        existingToast.remove();
-    }
+    if (existingToast) existingToast.remove();
 
     const toast = document.createElement('div');
     toast.className = 'toast';
